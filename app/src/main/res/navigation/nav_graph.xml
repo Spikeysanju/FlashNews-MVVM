@@ -48,6 +48,9 @@
         android:id="@+id/articleDetailsFragment"
         android:name="www.spikeysanju.flashnews.ui.fragments.ArticleDetailsFragment"
         android:label="fragment_article_details"
-        tools:layout="@layout/fragment_article_details"
-        />
+        tools:layout="@layout/fragment_article_details">
+        <argument
+            android:name="article"
+            app:argType="www.spikeysanju.flashnews.model.Article" />
+    </fragment>
 </navigation>

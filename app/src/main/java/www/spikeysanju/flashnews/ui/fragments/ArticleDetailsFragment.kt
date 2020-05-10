@@ -1,24 +1,37 @@
 package www.spikeysanju.flashnews.ui.fragments
 
+import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.navArgs
+import kotlinx.android.synthetic.main.fragment_article_details.*
+import www.spikeysanju.flashnews.MainActivity
 import www.spikeysanju.flashnews.R
+import www.spikeysanju.flashnews.ui.viewmodels.NewsViewModel
 
 /**
  * A simple [Fragment] subclass.
  */
-class ArticleDetailsFragment : Fragment() {
+class ArticleDetailsFragment : Fragment(R.layout.fragment_article_details) {
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_article_details, container, false)
+    lateinit var viewModel: NewsViewModel
+    val args: ArticleDetailsFragmentArgs by navArgs()
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewModel = (activity as MainActivity).viewModel
+        val article = args.article
+
+        webView.apply {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                webViewClient = webViewClient
+            }
+            loadUrl(article.url)
+
+        }
+
+
     }
-
 }

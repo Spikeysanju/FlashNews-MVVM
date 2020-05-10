@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.coroutines.Job
@@ -42,6 +43,18 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
         // search news text watcher
         searchNewsETListener()
+
+
+        // set onClick listener for RV Item
+        newsAdapter.setOnItemClickListener {
+            val bundle = Bundle().apply {
+                putSerializable("article", it)
+            }
+            findNavController().navigate(
+                R.id.action_searchFragment_to_articleDetailsFragment,
+                bundle
+            )
+        }
 
 
 

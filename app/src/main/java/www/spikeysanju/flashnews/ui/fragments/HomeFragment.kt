@@ -2,14 +2,13 @@ package www.spikeysanju.flashnews.ui.fragments
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.View
-import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_home.*
 import www.spikeysanju.flashnews.MainActivity
-
 import www.spikeysanju.flashnews.R
 import www.spikeysanju.flashnews.adapters.NewsAdapter
 import www.spikeysanju.flashnews.ui.viewmodels.NewsViewModel
@@ -29,7 +28,21 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Init RV
         setUpRecyclerView()
+
+        // set onClick listener for RV Item
+        newsAdapter.setOnItemClickListener {
+            val bundle = Bundle().apply {
+                putSerializable("article", it)
+            }
+            findNavController().navigate(
+                R.id.action_homeFragment_to_articleDetailsFragment,
+                bundle
+            )
+        }
+
+
 
         viewModel = (activity as MainActivity).viewModel
 
