@@ -14,13 +14,19 @@ class NewsViewModel (val newsRepository: NewsRepository) :ViewModel() {
 
 
     val breakingNews : MutableLiveData<Resource<NewsResponse>> = MutableLiveData()
-    val breakingNewsPage = 1
+    var breakingNewsPage = 1
+    var breakingNewsResponse: NewsResponse? = null
+
 
     val techNews : MutableLiveData<Resource<NewsResponse>> = MutableLiveData()
-    val techNewsPage = 1
+    var techNewsPage = 1
+    var techNewsResponse: NewsResponse? = null
+
 
     val searchNews: MutableLiveData<Resource<NewsResponse>> = MutableLiveData()
-    val searchNewsPage = 1
+    var searchNewsPage = 1
+    var searchNewsResponse: NewsResponse? = null
+
 
 
     init {
@@ -44,7 +50,7 @@ class NewsViewModel (val newsRepository: NewsRepository) :ViewModel() {
 
         techNews.postValue(Resource.Loading())
         val response = newsRepository.getTechNews(source, techNewsPage)
-        techNews.postValue(handleBreakingNewsResponse(response))
+        techNews.postValue(handleTechNewsResponse(response))
 
     }
 
@@ -62,7 +68,35 @@ class NewsViewModel (val newsRepository: NewsRepository) :ViewModel() {
 
         if (response.isSuccessful){
             response.body()?.let { resultResponse ->
-                return  Resource.Success(resultResponse)
+                breakingNewsPage++
+                if (breakingNewsResponse == null) {
+                    breakingNewsResponse = resultResponse
+                } else {
+                    val oldArticles = breakingNewsResponse?.articles
+                    val newArticles = resultResponse.articles
+                    oldArticles?.addAll(newArticles)
+                }
+                return Resource.Success(breakingNewsResponse ?: resultResponse)
+            }
+        }
+        return Resource.Error(response.message())
+    }
+
+
+    // Handle tech News
+    private fun handleTechNewsResponse(response: Response<NewsResponse>): Resource<NewsResponse> {
+
+        if (response.isSuccessful) {
+            response.body()?.let { resultResponse ->
+                techNewsPage++
+                if (techNewsResponse == null) {
+                    techNewsResponse = resultResponse
+                } else {
+                    val oldArticles = techNewsResponse?.articles
+                    val newArticles = resultResponse.articles
+                    oldArticles?.addAll(newArticles)
+                }
+                return Resource.Success(techNewsResponse ?: resultResponse)
             }
         }
         return  Resource.Error(response.message())
@@ -74,7 +108,15 @@ class NewsViewModel (val newsRepository: NewsRepository) :ViewModel() {
 
         if (response.isSuccessful) {
             response.body()?.let { resultResponse ->
-                return Resource.Success(resultResponse)
+                searchNewsPage++
+                if (searchNewsResponse == null) {
+                    searchNewsResponse = resultResponse
+                } else {
+                    val oldArticles = searchNewsResponse?.articles
+                    val newArticles = resultResponse.articles
+                    oldArticles?.addAll(newArticles)
+                }
+                return Resource.Success(searchNewsResponse ?: resultResponse)
             }
         }
         return Resource.Error(response.message())

@@ -62,7 +62,7 @@ class NewsAdapter: RecyclerView.Adapter<NewsAdapter.ArticleViewHolder>() {
 
 
             }
-            article_title.text = article.title
+            article_title.text = article?.title
 
             // on item click
             setOnClickListener {

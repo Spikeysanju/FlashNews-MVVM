@@ -5,10 +5,12 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import android.widget.AbsListView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
@@ -18,10 +20,9 @@ import www.spikeysanju.flashnews.MainActivity
 import www.spikeysanju.flashnews.R
 import www.spikeysanju.flashnews.adapters.NewsAdapter
 import www.spikeysanju.flashnews.ui.viewmodels.NewsViewModel
+import www.spikeysanju.flashnews.utils.Constants
 import www.spikeysanju.flashnews.utils.Constants.Companion.SEARCH_NEWS_TIME_DELAY
 import www.spikeysanju.flashnews.utils.Resource
-import www.spikeysanju.flashnews.utils.hide
-import www.spikeysanju.flashnews.utils.show
 
 /**
  * A simple [Fragment] subclass.
@@ -63,18 +64,20 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             when (response) {
 
                 is Resource.Loading -> {
-                    search_progress.show()
+                    showProgressBar()
                 }
 
                 is Resource.Success -> {
-                    search_progress.hide()
+                    hideProgressBar()
                     response.data?.let { newsResponse ->
-                        newsAdapter.differ.submitList(newsResponse.articles)
+                        newsAdapter.differ.submitList(newsResponse.articles.toList())
+                        val totalPages = newsResponse.totalResults / Constants.QUERY_PAGE_SIZE + 2
+                        isLastPage = viewModel.searchNewsPage == totalPages
                     }
                 }
 
                 is Resource.Error -> {
-                    search_progress.hide()
+                    hideProgressBar()
                     response.message?.let { message ->
                         Log.d(TAG, "An Error Occured:$message")
                     }
@@ -120,7 +123,57 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         search_news_rv.apply {
             adapter = newsAdapter
             layoutManager = LinearLayoutManager(activity)
+            addOnScrollListener(this@SearchFragment.scrollListener)
+
         }
     }
+
+    private fun hideProgressBar() {
+        search_progress.visibility = View.INVISIBLE
+        isLoading = false
+    }
+
+    private fun showProgressBar() {
+        search_progress.visibility = View.VISIBLE
+        isLoading = true
+    }
+
+    var isLoading = false
+    var isLastPage = false
+    var isScrolling = false
+
+    val scrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            super.onScrolled(recyclerView, dx, dy)
+
+            val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+            val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+            val visibleItemCount = layoutManager.childCount
+            val totalItemCount = layoutManager.itemCount
+
+            val isNotLoadingAndNotLastPage = !isLoading && !isLastPage
+            val isAtLastItem = firstVisibleItemPosition + visibleItemCount >= totalItemCount
+            val isNotAtBeginning = firstVisibleItemPosition >= 0
+            val isTotalMoreThanVisible = totalItemCount >= Constants.QUERY_PAGE_SIZE
+            val shouldPaginate = isNotLoadingAndNotLastPage && isAtLastItem && isNotAtBeginning &&
+                    isTotalMoreThanVisible && isScrolling
+            if (shouldPaginate) {
+                viewModel.searchNews(etSearch.text.toString())
+                isScrolling = false
+            } else {
+                search_news_rv.setPadding(0, 0, 0, 0)
+            }
+        }
+
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            super.onScrollStateChanged(recyclerView, newState)
+            if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
+                isScrolling = true
+            }
+        }
+    }
+
+
+
 
 }
