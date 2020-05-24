@@ -1,10 +1,11 @@
 package www.spikeysanju.flashnews.ui.viewmodels
 
-import  androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import retrofit2.Response
+import www.spikeysanju.flashnews.model.Article
 import www.spikeysanju.flashnews.model.NewsResponse
 import www.spikeysanju.flashnews.repository.NewsRepository
 import www.spikeysanju.flashnews.utils.Resource
@@ -27,6 +28,7 @@ class NewsViewModel (val newsRepository: NewsRepository) :ViewModel() {
         getTechNews("techcrunch")
     }
 
+
     // get Breaking News
     fun getBreakingNews(countryCode:String) = viewModelScope.launch {
 
@@ -46,6 +48,7 @@ class NewsViewModel (val newsRepository: NewsRepository) :ViewModel() {
 
     }
 
+    // search for news
     fun searchNews(searchQuery: String) = viewModelScope.launch {
 
         searchNews.postValue(Resource.Loading())
@@ -75,6 +78,20 @@ class NewsViewModel (val newsRepository: NewsRepository) :ViewModel() {
             }
         }
         return Resource.Error(response.message())
+    }
+
+    // save article
+    fun saveArticle(article: Article) = viewModelScope.launch {
+        newsRepository.upsert(article)
+    }
+
+    // get saved news
+    fun getSavedArticles() = newsRepository.getSavedNews()
+
+
+    // delete article
+    fun deleteArticle(article: Article) = viewModelScope.launch {
+        newsRepository.deleteArticle(article)
     }
 
 

@@ -2,6 +2,7 @@ package www.spikeysanju.flashnews.repository
 
 import www.spikeysanju.flashnews.api.RetrofitInstance
 import www.spikeysanju.flashnews.db.ArticleDatabase
+import www.spikeysanju.flashnews.model.Article
 
 class NewsRepository(val db: ArticleDatabase){
 
@@ -17,6 +18,13 @@ class NewsRepository(val db: ArticleDatabase){
     suspend fun searchNews(searchQuery: String, pageNumber: Int) =
         RetrofitInstance.api.searchForNews(searchQuery, pageNumber)
 
+    // insert or update article
+    suspend fun upsert(article: Article) = db.getArticleDao().upsert(article)
 
+    // get saved news
+    fun getSavedNews() = db.getArticleDao().getAllArticles()
+
+    // delete article
+    suspend fun deleteArticle(article: Article) = db.getArticleDao().deleteArticle(article)
 
 }
