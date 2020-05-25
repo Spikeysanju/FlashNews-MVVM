@@ -10,3 +10,5 @@ class Constants {
         const val QUERY_PAGE_SIZE = 20
     }
 }
+
+

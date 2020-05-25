@@ -3,9 +3,9 @@ package www.spikeysanju.flashnews.ui.fragments
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.widget.AbsListView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -79,7 +79,8 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                 is Resource.Error -> {
                     hideProgressBar()
                     response.message?.let { message ->
-                        Log.d(TAG, "An Error Occured:$message")
+                        Toast.makeText(activity, "An error occured: $message", Toast.LENGTH_SHORT)
+                            .show()
                     }
                 }
 
