@@ -1,3 +1,4 @@
+# Flash News
 **Flash News** is a News Android application 📱 built to demonstrate use of *Modern Android development*
 
 
