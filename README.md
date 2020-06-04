@@ -8,7 +8,7 @@
 
 ***You can Install and test latest Flash News app from below 👇***
 
-[![Flash News App](https://img.shields.io/badge/Picto🌈-APK-black.svg?style=for-the-badge&logo=android)](https://github.com/Spikeysanju/Picto/blob/master/apk/Picto.apk)
+[![Flash News App](https://img.shields.io/badge/FlashNews🌈-APK-black.svg?style=for-the-badge&logo=android)](https://github.com/Spikeysanju/Picto/blob/master/apk/Picto.apk)
 
 
 
