@@ -1,5 +1,3 @@
-![GitHub Cards Preview](https://github.com/Spikeysanju/Picto/blob/master/Screenshots/PictoCard.jpg?raw=true)
-
 **Flash News** is a News Android application 📱 built to demonstrate use of *Modern Android development*
 
 
@@ -8,7 +6,7 @@
 
 ***You can Install and test latest Flash News app from below 👇***
 
-[![Flash News App](https://img.shields.io/badge/FlashNews🌈-APK-black.svg?style=for-the-badge&logo=android)](https://github.com/Spikeysanju/Picto/blob/master/apk/Picto.apk)
+[![Flash News App](https://img.shields.io/badge/FlashNews🌈-APK-black.svg?style=for-the-badge&logo=android)](https://github.com/Spikeysanju/FlashNews-MVVM/blob/master/apk/flashnews.apk)
 
 
 
